@@ -1,0 +1,15 @@
+﻿@model ApnaRent.Models.ApplicationUser
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="container py-4" style="max-width:500px;">
+    <div class="card shadow-sm p-4">
+        <div class="text-center mb-3">
+            <div class="rounded-circle bg-light mx-auto d-flex align-items-center justify-content-center" style="width:80px;height:80px;font-size:32px;">👤</div>
+        </div>
+        <div class="mb-2"><strong>Name:</strong> @Model.FullName</div>
+        <div class="mb-2"><strong>Email:</strong> @Model.Email</div>
+        <div class="mb-2"><strong>Verified:</strong> @(Model.IsOtpVerified ? "Yes ✅" : "No")</div>
+    </div>
+</div>

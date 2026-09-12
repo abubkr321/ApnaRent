@@ -1,0 +1,35 @@
+﻿<footer class="site-footer">
+    <div class="container py-5">
+        <div class="row gy-4">
+            <div class="col-6 col-md-3">
+                <div class="footer-heading">Popular Searches</div>
+                <a asp-controller="Home" asp-action="Index" asp-route-categoryId="1" class="footer-link-light">Rent Electronics</a>
+                <a asp-controller="Home" asp-action="Index" asp-route-categoryId="4" class="footer-link-light">Rent Event & Party</a>
+                <a asp-controller="Home" asp-action="Index" asp-route-categoryId="3" class="footer-link-light">Rent Furniture</a>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="footer-heading">Top Cities</div>
+                <a href="#" class="footer-link-light">Karachi</a>
+                <a href="#" class="footer-link-light">Lahore</a>
+                <a href="#" class="footer-link-light">Islamabad</a>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="footer-heading">Support & Contact</div>
+                <a asp-controller="Booking" asp-action="MyBookings" class="footer-link-light">Your Bookings</a>
+                <a href="mailto:support@apnarent.com" class="footer-link-light">Contact Us</a>
+                <a asp-controller="Home" asp-action="About Us" class="footer-link-light">About Us</a>
+
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="footer-heading">Policies</div>
+                <a asp-controller="Home" asp-action="RentalPolicy" class="text-decoration-none">Rental Policy</a><a asp-controller="Home" asp-action="RentalPolicy" class="text-decoration-none"></a>
+                <a asp-controller="Home" asp-action="Guarantee" class="footer-link-light">Guarantee</a>
+
+            </div>
+        </div>
+
+        <div class="footer-bottom-bar">
+            &copy; @DateTime.Now.Year ApnaRent. All rights reserved. This website and its contents are the property of ApnaRent and protected under applicable intellectual property laws.
+        </div>
+    </div>
+</footer>

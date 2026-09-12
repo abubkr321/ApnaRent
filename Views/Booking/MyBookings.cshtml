@@ -1,0 +1,42 @@
+﻿@model IEnumerable<ApnaRent.Models.Booking>
+
+<h2>My Rentals</h2>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Item</th>
+        <th>Days</th>
+        <th>Total</th>
+        <th>Status</th>
+        <th>Action</th>
+    </tr>
+
+    @foreach (var b in Model)
+    {
+        <tr>
+            <td>@b.Item.Name</td>
+            <td>@b.Days</td>
+            <td>Rs @b.TotalPrice</td>
+            <td>
+                @b.Status
+                @if (b.Status == "Rejected" && !string.IsNullOrEmpty(b.RejectionReason))
+                {
+                    <div class="small text-muted">Reason: @b.RejectionReason</div>
+                }
+            </td>
+            <td>
+                @if (b.Status == "Pending")
+                {
+                    <a href="/Booking/Cancel/@b.Id" class="btn btn-danger btn-sm">Cancel</a>
+                }
+                @if (b.Status == "Approved")
+                {
+                    <a href="/Booking/Complete/@b.Id" class="btn btn-success btn-sm">Complete</a>
+                }
+                <a asp-controller="Chat" asp-action="Index" asp-route-itemId="@b.ItemId" class="btn btn-sm btn-outline-secondary">
+                    💬 Message Owner
+                </a>
+            </td>
+        </tr>
+    }
+</table>

@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ApnaRent</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
+</head>
+<body>
+
+    <div class="auth-wrapper">
+
+        <!-- ===== Left Branding Panel ===== -->
+        <div class="auth-brand-panel">
+            <div class="auth-brand-shape shape-1"></div>
+            <div class="auth-brand-shape shape-2"></div>
+
+            <div class="auth-brand-content">
+                <a href="/" class="auth-logo">
+                    <i class="bi bi-house-door-fill"></i> ApnaRent
+                </a>
+
+                <h2 class="auth-brand-title">Find, Rent &amp; List<br />Anything, Anywhere.</h2>
+                <p class="auth-brand-text">
+                    Pakistan's trusted marketplace to rent out or find exactly what you need —
+                    homes, vehicles, gadgets and more — safely and easily.
+                </p>
+
+                <ul class="auth-feature-list">
+                    <li><i class="bi bi-patch-check-fill"></i> Verified listings &amp; users</li>
+                    <li><i class="bi bi-shield-lock-fill"></i> Secure OTP-based login</li>
+                    <li><i class="bi bi-lightning-charge-fill"></i> Fast &amp; hassle-free renting</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ===== Right Form Panel ===== -->
+        <div class="auth-form-panel">
+            <div class="auth-form-card">
+                <a href="/" class="auth-mobile-logo">
+                    <i class="bi bi-house-door-fill"></i> ApnaRent
+                </a>
+
+                @RenderBody()
+            </div>
+
+            <p class="auth-footer-note">&copy; @DateTime.Now.Year ApnaRent. All rights reserved.</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+            // Show/Hide password toggle (used on Login / Register / Reset Password)
+            document.querySelectorAll('.toggle-pass').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var input = document.getElementById(this.dataset.target);
+                    if (!input) return;
+                    var isPass = input.type === 'password';
+                    input.type = isPass ? 'text' : 'password';
+                    this.innerHTML = isPass
+                        ? '<i class="bi bi-eye-slash"></i>'
+                        : '<i class="bi bi-eye"></i>';
+                });
+            });
+    </script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

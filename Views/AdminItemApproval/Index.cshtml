@@ -1,0 +1,94 @@
+﻿@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Item Listing Requests";
+}
+
+@model List<ApnaRent.Models.Item>
+
+<h3 class="fw-bold mb-3">Item Listing Requests</h3>
+<p class="text-muted small mb-3">Review items users have listed for rent before they go live.</p>
+
+<div class="mb-3 d-flex gap-2 flex-wrap">
+    <a asp-action="Index" asp-route-status="Pending" class="tab-btn @(ViewBag.SelectedStatus == "Pending" ? "active" : "")">
+        Pending @(ViewBag.PendingCount > 0 ? $"({ViewBag.PendingCount})" : "")
+    </a>
+    <a asp-action="Index" asp-route-status="Approved" class="tab-btn @(ViewBag.SelectedStatus == "Approved" ? "active" : "")">Approved</a>
+    <a asp-action="Index" asp-route-status="Rejected" class="tab-btn @(ViewBag.SelectedStatus == "Rejected" ? "active" : "")">Rejected</a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="admin-card text-center text-muted py-5">No items in this category.</div>
+}
+else
+{
+    <div class="row g-3">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-6 col-lg-4">
+                <div class="admin-card p-0 h-100 d-flex flex-column overflow-hidden">
+                    <a asp-controller="Item" asp-action="Details" asp-route-id="@item.Id" class="item-thumb d-block">
+                        @if (!string.IsNullOrEmpty(item.ImagePath))
+                        {
+                            <img src="@item.ImagePath" alt="@item.Name" />
+                        }
+                        else
+                        {
+                            <div class="d-flex align-items-center justify-content-center h-100">
+                                <i class="bi bi-image text-muted fs-1"></i>
+                            </div>
+                        }
+                    </a>
+
+                    <div class="p-3 d-flex flex-column flex-grow-1">
+                        <a asp-controller="Item" asp-action="Details" asp-route-id="@item.Id" class="link-user mb-1">@item.Name</a>
+                        <p class="small text-muted mb-1">By @(item.Owner?.FullName ?? "User") · @(item.Category?.Name ?? "Uncategorized")</p>
+                        <p class="small mb-2 flex-grow-1">@item.Description</p>
+                        <p class="fw-semibold mb-2" style="color:var(--admin-accent);">Rs @item.PricePerDay /day</p>
+
+                        @if (item.ApprovalStatus == "Rejected" && !string.IsNullOrEmpty(item.ItemRejectionReason))
+                        {
+                            <p class="small text-danger">Reason: @item.ItemRejectionReason</p>
+                        }
+
+                        @if (ViewBag.SelectedStatus == "Pending")
+                        {
+                            <div class="d-flex gap-2 mt-auto">
+                                <form asp-action="Approve" method="post" class="flex-grow-1">
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <button type="submit" class="btn btn-teal btn-sm w-100">Approve</button>
+                                </form>
+                                <button type="button" class="btn btn-orange btn-sm flex-grow-1" data-bs-toggle="modal" data-bs-target="#rejectItem-@item.Id">Reject</button>
+                            </div>
+
+                            <div class="modal fade" id="rejectItem-@item.Id" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <form asp-action="Reject" method="post" class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Reject Listing</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input type="hidden" name="id" value="@item.Id" />
+                                            <textarea name="reason" class="form-control" placeholder="Reason for rejection" required></textarea>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-danger">Confirm Reject</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        }
+                        else if (ViewBag.SelectedStatus == "Approved")
+                        {
+                            <form asp-action="Delete" method="post" class="mt-auto" onsubmit="return confirm('Remove this listing?')">
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <button type="submit" class="btn btn-outline-danger btn-sm w-100">Remove Listing</button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

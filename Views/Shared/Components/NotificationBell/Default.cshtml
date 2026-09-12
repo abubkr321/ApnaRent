@@ -1,0 +1,34 @@
+﻿@model List<Notification>
+@{
+    var unread = Model.Count(n => !n.IsRead);
+}
+<div class="dropdown">
+    <button class="btn rounded-circle nav-icon-btn position-relative" type="button" data-bs-toggle="dropdown">
+        <i class="bi bi-bell-fill"></i>
+        @if (unread > 0)
+        {
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:0.6rem;">
+                @unread
+            </span>
+        }
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end shadow-sm notif-dropdown">
+        @if (!Model.Any())
+        {
+            <li><span class="dropdown-item-text text-muted small">No notifications yet</span></li>
+        }
+        else
+        {
+            foreach (var n in Model)
+            {
+                <li>
+                    <a class="dropdown-item @(n.IsRead ? "" : "fw-bold")"
+                       asp-controller="Notification" asp-action="GoTo" asp-route-id="@n.Id">
+                        <div class="notif-text">@n.Message</div>
+                        <div class="small text-muted">@n.CreatedOn.ToString("dd MMM, hh:mm tt")</div>
+                    </a>
+                </li>
+            }
+        }
+    </ul>
+</div>

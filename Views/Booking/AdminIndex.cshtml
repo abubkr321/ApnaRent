@@ -1,0 +1,109 @@
+﻿@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Manage Bookings";
+}
+
+@model List<ApnaRent.Models.Booking>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="fw-bold mb-0">Manage Bookings</h3>
+</div>
+
+<div class="mb-3 d-flex gap-2 flex-wrap">
+    <a asp-action="AdminIndex" asp-route-status="Pending" class="tab-btn @(ViewBag.SelectedStatus == "Pending" ? "active" : "")">Pending</a>
+    <a asp-action="AdminIndex" asp-route-status="Approved" class="tab-btn @(ViewBag.SelectedStatus == "Approved" ? "active" : "")">Approved</a>
+    <a asp-action="AdminIndex" asp-route-status="Active" class="tab-btn @(ViewBag.SelectedStatus == "Active" ? "active" : "")">Active</a>
+    <a asp-action="AdminIndex" asp-route-status="Completed" class="tab-btn @(ViewBag.SelectedStatus == "Completed" ? "active" : "")">Completed</a>
+    <a asp-action="AdminIndex" asp-route-status="Rejected" class="tab-btn @(ViewBag.SelectedStatus == "Rejected" ? "active" : "")">Rejected</a>
+</div>
+
+<div class="admin-card">
+    @if (!Model.Any())
+    {
+        <div class="text-center text-muted py-5">No bookings in this category.</div>
+    }
+    else
+    {
+        <div class="admin-card">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Renter</th>
+                            <th>Item</th>
+                            <th>Item Owner</th>
+                            <th>Dates</th>
+                            <th>Qty</th>
+                            <th>Amount</th>
+                            <th>Payment</th>
+                            <th>Contact</th>
+                            <th>Status</th>
+                            @if (ViewBag.SelectedStatus == "Pending")
+                            {
+                                <th>Action</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Any())
+                        {
+                            <tr><td colspan="10" class="text-center text-muted py-4">No bookings in this category.</td></tr>
+                        }
+                        else
+                        {
+                            @foreach (var b in Model)
+                            {
+                                <tr>
+                                    <td><a asp-controller="AdminUsers" asp-action="Details" asp-route-id="@b.UserId" class="link-user">@b.User?.Email</a></td>
+                                    <td><a asp-action="Details" asp-route-id="@b.Id" class="link-user">@b.Item?.Name</a></td>
+                                    <td>
+                                        <a asp-controller="AdminUsers" asp-action="Details" asp-route-id="@b.Item?.OwnerId" class="link-user">
+                                            @(b.Item?.Owner?.FullName ?? "—")
+                                        </a>
+                                    </td>
+                                    <td class="small">@b.FromDate.ToString("dd MMM") → @b.ToDate.ToString("dd MMM")</td>
+                                    <td>@b.Quantity</td>
+                                    <td>Rs @b.TotalPrice</td>
+                                    <td class="small">@b.PaymentMethod</td>
+                                    <td class="small">@b.ContactNumber</td>
+                                    <td>
+                                        <span class="status-badge status-@b.Status.ToLower()">@b.Status</span>
+                                        @if (b.Status == "Rejected" && !string.IsNullOrEmpty(b.RejectionReason))
+                                        {
+                                            <div class="small text-muted">@b.RejectionReason</div>
+                                        }
+                                    </td>
+                                    @if (ViewBag.SelectedStatus == "Pending")
+                                    {
+                                        <td>
+                                            <a asp-action="Approve" asp-route-id="@b.Id" class="btn btn-teal btn-sm">Approve</a>
+                                            <button type="button" class="btn btn-orange btn-sm" data-bs-toggle="modal" data-bs-target="#rejectModal-@b.Id">Reject</button>
+
+                                            <div class="modal fade" id="rejectModal-@b.Id" tabindex="-1">
+                                                <div class="modal-dialog">
+                                                    <form asp-controller="Booking" asp-action="Reject" method="post" class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Reject Booking</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <input type="hidden" name="id" value="@b.Id" />
+                                                            <textarea name="reason" class="form-control" placeholder="Reason for rejection" required></textarea>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="submit" class="btn btn-danger">Confirm Reject</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

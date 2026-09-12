@@ -1,0 +1,72 @@
+﻿@model ApnaRent.Models.Booking
+@{
+    if (User.IsInRole("Admin")) { Layout = "_AdminLayout"; }
+    ViewData["Title"] = "Booking Details";
+}
+
+<div class="@(User.IsInRole("Admin") ? "" : "container py-4")" style="max-width:800px;">
+
+    <div class="admin-card">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+                <h4 class="fw-bold mb-1">@Model.Item?.Name</h4>
+                <span class="status-badge status-@Model.Status.ToLower()">@Model.Status</span>
+            </div>
+            <h5 class="fw-bold" style="color:var(--admin-accent, #E76F51);">Rs @Model.TotalPrice</h5>
+        </div>
+
+        <hr />
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <p class="small text-muted mb-1">Renter</p>
+                <p class="fw-semibold">@Model.User?.Email</p>
+            </div>
+            <div class="col-md-6">
+                <p class="small text-muted mb-1">Item Owner</p>
+                <p class="fw-semibold">@(Model.Item?.Owner?.FullName ?? "—")</p>
+            </div>
+            <div class="col-md-6">
+                <p class="small text-muted mb-1">Rental Start</p>
+                <p class="fw-semibold">@Model.FromDate.ToString("dd MMM yyyy")</p>
+            </div>
+            <div class="col-md-6">
+                <p class="small text-muted mb-1">Rental End</p>
+                <p class="fw-semibold">@Model.ToDate.ToString("dd MMM yyyy")</p>
+            </div>
+            <div class="col-md-6">
+                <p class="small text-muted mb-1">Duration</p>
+                <p class="fw-semibold">@Model.Days day(s), Qty @Model.Quantity</p>
+            </div>
+            <div class="col-md-6">
+                <p class="small text-muted mb-1">Payment Method</p>
+                <p class="fw-semibold">@Model.PaymentMethod</p>
+            </div>
+            <div class="col-md-6">
+                <p class="small text-muted mb-1">Contact Number</p>
+                <p class="fw-semibold">@Model.ContactNumber</p>
+            </div>
+            <div class="col-md-6">
+                <p class="small text-muted mb-1">CNIC</p>
+                <p class="fw-semibold">@Model.CNIC</p>
+            </div>
+            <div class="col-12">
+                <p class="small text-muted mb-1">Delivery Location</p>
+                <p class="fw-semibold">@Model.DeliveryLocation</p>
+            </div>
+
+            @if (Model.Status == "Rejected" && !string.IsNullOrEmpty(Model.RejectionReason))
+            {
+                <div class="col-12">
+                    <p class="small text-muted mb-1">Rejection Reason</p>
+                    <p class="text-danger">@Model.RejectionReason</p>
+                </div>
+            }
+        </div>
+
+        <hr />
+        <a asp-controller="Chat" asp-action="Index" asp-route-itemId="@Model.ItemId" class="btn btn-blue btn-sm">
+            💬 Open Conversation
+        </a>
+    </div>
+</div>

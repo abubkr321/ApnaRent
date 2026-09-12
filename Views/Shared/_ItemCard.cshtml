@@ -1,0 +1,65 @@
+﻿@model Item
+@{
+    var currentUserId = ViewBag.CurrentUserId as string;
+    var savedIds = ViewBag.SavedItemIds as HashSet<int> ?? new HashSet<int>();
+    var nextAvailableDates = ViewBag.NextAvailableDates as Dictionary<int, DateTime?>;
+    bool isOwnItem = currentUserId != null && Model.OwnerId == currentUserId;
+    bool isSaved = savedIds.Contains(Model.Id);
+    DateTime? nextAvailable = (nextAvailableDates != null && nextAvailableDates.ContainsKey(Model.Id)) ? nextAvailableDates[Model.Id] : null;
+}
+<div class="card item-card">
+    <div class="item-card-media">
+        <a asp-controller="Item" asp-action="Details" asp-route-id="@Model.Id">
+            @if (!string.IsNullOrEmpty(Model.ImagePath))
+            {
+                <img src="@Model.ImagePath" alt="@Model.Name" />
+            }
+        </a>
+
+        @if (User.Identity.IsAuthenticated)
+        {
+            <form asp-controller="Saved" asp-action="Toggle" method="post" class="save-btn-form">
+                <input type="hidden" name="itemId" value="@Model.Id" />
+                <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
+                <button type="submit" class="save-heart-btn" title="Save item">
+                    @(isSaved ? "❤️" : "🤍")
+                </button>
+            </form>
+        }
+    </div>
+
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+            <a asp-controller="Item" asp-action="Details" asp-route-id="@Model.Id" class="text-decoration-none text-dark">
+                <h6 class="card-title mb-1">@Model.Name</h6>
+            </a>
+            @if (Model.AvailabilityCount > 0)
+            {
+                <span class="badge-available">@Model.AvailabilityCount Available</span>
+            }
+            else
+            {
+                <span class="badge-unavailable">Unavailable</span>
+            }
+        </div>
+        <p class="text-muted small mb-1">@Model.Location</p>
+        <p class="owner-tag small mb-1">Listed by @(Model.Owner?.FullName ?? "ApnaRent User")</p>
+        <p class="price-tag mb-2">Rs @Model.PricePerDay <small class="fw-normal text-muted">/day</small></p>
+
+        @if (isOwnItem)
+        {
+            <span class="btn btn-outline-secondary btn-sm w-100 disabled">Your Item</span>
+        }
+        else if (Model.AvailabilityCount > 0)
+        {
+            <a asp-controller="Booking" asp-action="Create" asp-route-itemId="@Model.Id"
+               class="btn btn-primary btn-sm w-100">Book Now</a>
+        }
+        else
+        {
+            <span class="btn btn-secondary btn-sm w-100 disabled">
+                @(nextAvailable.HasValue ? $"Available after {nextAvailable.Value:dd MMM}" : "Not Available")
+            </span>
+        }
+    </div>
+</div>

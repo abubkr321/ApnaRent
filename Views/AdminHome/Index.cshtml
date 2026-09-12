@@ -1,0 +1,174 @@
+﻿@model ApnaRent.ViewModels.AdminHomeVM
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = User.IsInRole("Admin") ? "Items" : "My Items";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="fw-bold mb-0">Dashboard Overview</h3>
+    <a class="btn btn-teal" asp-controller="Item" asp-action="Create">
+        <i class="bi bi-plus-circle me-1"></i> Add Item
+    </a>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-2-4" style="flex:0 0 20%;max-width:20%;">
+        <a asp-controller="AdminUsers" asp-action="Index" class="text-decoration-none">
+            <div class="stat-card" style="--stat-color:#2A9D8F;">
+                <div class="stat-icon"><i class="bi bi-people"></i></div>
+                <div class="stat-value">@Model.TotalUsers</div>
+                <div class="stat-label">Total Users</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-2-4" style="flex:0 0 20%;max-width:20%;">
+        <a asp-controller="Item" asp-action="Index" class="text-decoration-none">
+            <div class="stat-card" style="--stat-color:#E76F51;">
+                <div class="stat-icon"><i class="bi bi-box-seam"></i></div>
+                <div class="stat-value">@Model.TotalItems</div>
+                <div class="stat-label">Total Items</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-2-4" style="flex:0 0 20%;max-width:20%;">
+        <a asp-controller="Booking" asp-action="AdminIndex" asp-route-status="Approved" class="text-decoration-none">
+            <div class="stat-card" style="--stat-color:#4E9BDB;">
+                <div class="stat-icon"><i class="bi bi-calendar-check"></i></div>
+                <div class="stat-value">@Model.TotalBookings</div>
+                <div class="stat-label">Total Bookings</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-2-4" style="flex:0 0 20%;max-width:20%;">
+        <a asp-controller="Booking" asp-action="AdminIndex" asp-route-status="Pending" class="text-decoration-none">
+            <div class="stat-card" style="--stat-color:#E9B44C;">
+                <div class="stat-icon"><i class="bi bi-hourglass-split"></i></div>
+                <div class="stat-value">@Model.PendingBookings</div>
+                <div class="stat-label">Pending Bookings</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-2-4" style="flex:0 0 20%;max-width:20%;">
+        <a asp-controller="AdminItemApproval" asp-action="Index" class="text-decoration-none">
+            <div class="stat-card" style="--stat-color:#9C6ADE;">
+                <div class="stat-icon"><i class="bi bi-clipboard-check"></i></div>
+                <div class="stat-value">@Model.PendingItemApprovals</div>
+                <div class="stat-label">Listing Requests</div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card" style="--stat-color:#2A9D8F;">
+            <div class="stat-icon"><i class="bi bi-cash-stack"></i></div>
+            <div class="stat-value">Rs @Model.TotalRevenue</div>
+            <div class="stat-label">Total Revenue</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-lg-5">
+        <div class="admin-card h-100">
+            <h6 class="fw-semibold mb-3">Revenue Trend (Last 6 Months)</h6>
+            <canvas id="revenueChart" height="200"></canvas>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="admin-card h-100">
+            <h6 class="fw-semibold mb-3">Bookings by Status</h6>
+            <canvas id="statusChart" height="200"></canvas>
+        </div>
+    </div>
+    <div class="col-lg-3">
+        <div class="admin-card h-100">
+            <h6 class="fw-semibold mb-3">Items by Category</h6>
+            <canvas id="categoryChart" height="200"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="admin-card mb-4">
+    <h6 class="fw-semibold mb-3">Recent Bookings</h6>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead><tr><th>User</th><th>Item</th><th>Days</th><th>Amount</th><th>Status</th></tr></thead>
+            <tbody>
+                @foreach (var b in Model.RecentBookings)
+                {
+                    <tr>
+                        <td>@b.User?.Email</td>
+                        <td><a asp-controller="Booking" asp-action="Details" asp-route-id="@b.Id" class="link-user">@b.Item?.Name</a></td>
+                        <td>@b.Days</td>
+                        <td>Rs @b.TotalPrice</td>
+                        <td><span class="status-badge status-@b.Status.ToLower()">@b.Status</span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="admin-card">
+    <h6 class="fw-semibold mb-3">Items with highest rental demand</h6>
+    @if (Model.LowStockItems != null && Model.LowStockItems.Any())
+    {
+        <ul class="list-group">
+            @foreach (var item in Model.LowStockItems)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <a asp-controller="Item" asp-action="Details" asp-route-id="@item.Id" class="link-user">@item.Name</a>
+                    @* <i class="bi bi-exclamation-triangle text-warning"></i> *@
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p class="text-muted mb-0">No low stock items.</p>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        new Chart(document.getElementById('revenueChart'), {
+            type: 'line',
+            data: {
+                labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.RevenueMonths)),
+                datasets: [{
+                    label: 'Revenue (Rs)',
+                    data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.RevenueValues)),
+                    borderColor: '#2A9D8F',
+                    backgroundColor: 'rgba(42,157,143,0.12)',
+                    fill: true, tension: 0.3
+                }]
+            },
+            options: { plugins: { legend: { display: false } } }
+        });
+
+        new Chart(document.getElementById('statusChart'), {
+            type: 'pie',
+            data: {
+                labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.BookingStatusCounts.Keys)),
+                datasets: [{
+                    data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.BookingStatusCounts.Values)),
+                    backgroundColor: ['#E9B44C', '#2A9D8F', '#4E9BDB', '#adb5bd', '#E76F51', '#dc3545']
+                }]
+            }
+        });
+
+        new Chart(document.getElementById('categoryChart'), {
+            type: 'doughnut',
+            data: {
+                labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ItemsByCategory.Keys)),
+                datasets: [{
+                    data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ItemsByCategory.Values)),
+                    backgroundColor: ['#2A9D8F', '#E76F51', '#4E9BDB', '#E9B44C', '#9C6ADE', '#F4A261', '#264653', '#adb5bd']
+                }]
+            },
+            options: { plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } } }
+        });
+    </script>
+}

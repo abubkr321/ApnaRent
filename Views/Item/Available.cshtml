@@ -1,0 +1,39 @@
+﻿@model IEnumerable<ApnaRent.Models.Item>
+
+<h2>Available Items</h2>
+
+@if (!Model.Any())
+{
+    <p>No items available</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Price / Day</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Description</td>
+                    <td>@item.PricePerDay</td>
+                    <td>
+                        <a asp-controller="Booking"
+                           asp-action="Create"
+                           asp-route-itemId="@item.Id"
+                           class="btn btn-primary">
+                            Book
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

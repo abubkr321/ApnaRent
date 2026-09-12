@@ -1,0 +1,394 @@
+﻿@{
+    ViewData["Title"] = "Rental Policy";
+}
+
+<style>
+    :root {
+        --policy-primary: #2A9D8F;
+        --policy-primary-dark: #21867A;
+        --policy-navy: #1B2A32;
+        --policy-bg: #F7F9FA;
+        --policy-border: #e5e9ea;
+        --policy-muted: #6b7a80;
+    }
+
+    .policy-hero {
+        background: linear-gradient(135deg, var(--policy-navy) 0%, var(--policy-primary-dark) 130%);
+        color: #fff;
+        padding: 70px 24px 60px;
+        text-align: center;
+    }
+
+        .policy-hero i {
+            font-size: 2.2rem;
+            color: var(--policy-primary);
+            background: rgba(255,255,255,0.08);
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 18px;
+        }
+
+        .policy-hero h1 {
+            font-weight: 700;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .policy-hero p {
+            color: rgba(255,255,255,0.75);
+            max-width: 560px;
+            margin: 0 auto;
+            font-size: 0.98rem;
+        }
+
+    .policy-body {
+        background: var(--policy-bg);
+        padding: 50px 20px 80px;
+    }
+
+    .policy-layout {
+        max-width: 1100px;
+        margin: 0 auto;
+        display: flex;
+        gap: 36px;
+        align-items: flex-start;
+    }
+
+    /* ---- Sticky Table of Contents ---- */
+    .policy-toc {
+        flex: 0 0 260px;
+        position: sticky;
+        top: 24px;
+        background: #fff;
+        border: 1px solid var(--policy-border);
+        border-radius: 14px;
+        padding: 22px;
+    }
+
+        .policy-toc h6 {
+            font-weight: 700;
+            color: var(--policy-navy);
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 14px;
+        }
+
+        .policy-toc a {
+            display: block;
+            color: var(--policy-muted);
+            text-decoration: none;
+            font-size: 0.88rem;
+            padding: 7px 0;
+            border-left: 2px solid transparent;
+            padding-left: 10px;
+            transition: .15s;
+        }
+
+            .policy-toc a:hover {
+                color: var(--policy-primary-dark);
+                border-left-color: var(--policy-primary);
+            }
+
+    /* ---- Content ---- */
+    .policy-content {
+        flex: 1;
+        background: #fff;
+        border: 1px solid var(--policy-border);
+        border-radius: 14px;
+        padding: 40px 44px;
+    }
+
+    .policy-updated {
+        display: inline-block;
+        background: #eef7f6;
+        color: var(--policy-primary-dark);
+        font-size: 0.78rem;
+        font-weight: 600;
+        padding: 5px 12px;
+        border-radius: 50px;
+        margin-bottom: 24px;
+    }
+
+    .policy-section {
+        margin-bottom: 36px;
+        scroll-margin-top: 24px;
+    }
+
+        .policy-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .policy-section h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--policy-navy);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+            .policy-section h2 .num {
+                background: var(--policy-primary);
+                color: #fff;
+                width: 28px;
+                height: 28px;
+                border-radius: 8px;
+                font-size: 0.82rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+            }
+
+        .policy-section p, .policy-section li {
+            color: #454f54;
+            font-size: 0.93rem;
+            line-height: 1.75;
+        }
+
+        .policy-section ul {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+
+            .policy-section ul li {
+                margin-bottom: 6px;
+            }
+
+    .policy-note {
+        background: #fff8ec;
+        border: 1px solid #fbe6b8;
+        color: #8a6416;
+        padding: 14px 16px;
+        border-radius: 10px;
+        font-size: 0.87rem;
+        display: flex;
+        gap: 10px;
+        margin-top: 14px;
+    }
+
+        .policy-note i {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+    .category-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+        gap: 14px;
+        margin-top: 16px;
+    }
+
+    .category-box {
+        border: 1px solid var(--policy-border);
+        border-radius: 12px;
+        padding: 16px;
+    }
+
+        .category-box i {
+            color: var(--policy-primary);
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .category-box h6 {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--policy-navy);
+            margin-bottom: 6px;
+        }
+
+        .category-box p {
+            font-size: 0.82rem;
+            margin: 0;
+            color: var(--policy-muted);
+        }
+
+    @@media (max-width: 900px) {
+        .policy-layout {
+            flex-direction: column;
+        }
+
+        .policy-toc {
+            position: static;
+            width: 100%;
+            flex: none;
+        }
+
+        .policy-content {
+            padding: 28px 22px;
+        }
+    }
+</style>
+
+<!-- ===== Hero ===== -->
+<div class="policy-hero">
+    <i class="bi bi-file-earmark-text-fill"></i>
+    <h1>Rental Policy</h1>
+    <p>Rules and guidelines for giving items on rent and taking items on rent through ApnaRent — applicable to electronics, furniture, event items, and all other categories.</p>
+</div>
+
+<!-- ===== Body ===== -->
+<div class="policy-body">
+    <div class="policy-layout">
+
+        <!-- Table of contents -->
+        <aside class="policy-toc">
+            <h6>On this page</h6>
+            <a href="#general">1. General Terms</a>
+            <a href="#giving">2. Giving an Item on Rent</a>
+            <a href="#taking">3. Taking an Item on Rent</a>
+            <a href="#deposit">4. Security Deposit &amp; Damage</a>
+            <a href="#cancellation">5. Cancellation &amp; Refunds</a>
+            <a href="#categories">6. Category-Specific Rules</a>
+            <a href="#prohibited">7. Prohibited Items</a>
+            <a href="#liability">8. Liability &amp; Disputes</a>
+            <a href="#contact">9. Contact Us</a>
+        </aside>
+
+        <!-- Main content -->
+        <div class="policy-content">
+
+            <span class="policy-updated">
+                <i class="bi bi-clock-history"></i> Last updated: @DateTime.Now.ToString("MMMM yyyy")
+            </span>
+
+            <div class="policy-section" id="general">
+                <h2><span class="num">1</span> General Terms</h2>
+                <p>
+                    ApnaRent is an online marketplace that connects people who want to rent out their
+                    belongings ("Lenders") with people who want to rent those items ("Renters"). By listing
+                    an item or booking an item on ApnaRent, both parties agree to the terms outlined in this
+                    policy, in addition to our general Terms of Service.
+                </p>
+                <ul>
+                    <li>All users must complete OTP-based email verification before listing or booking any item.</li>
+                    <li>Every rental is a direct agreement between the Lender and the Renter; ApnaRent acts only as a facilitating platform.</li>
+                    <li>Users must provide accurate information — item condition, pricing, availability, and personal details.</li>
+                </ul>
+            </div>
+
+            <div class="policy-section" id="giving">
+                <h2><span class="num">2</span> Giving an Item on Rent (Lenders)</h2>
+                <p>If you are listing an item for rent, the following applies:</p>
+                <ul>
+                    <li>Items must be functional, clean, and matching the description/photos uploaded at the time of listing.</li>
+                    <li>Every new listing goes through an admin approval/review before it becomes publicly visible.</li>
+                    <li>Lenders must clearly mention rental price, minimum rental duration, and any usage restrictions.</li>
+                    <li>Lenders are responsible for handing over the item on the agreed date, time, and condition.</li>
+                    <li>Lenders may request a refundable security deposit for high-value items (electronics, event equipment, etc.).</li>
+                    <li>Lenders must not list stolen, counterfeit, unsafe, or illegal items.</li>
+                </ul>
+            </div>
+
+            <div class="policy-section" id="taking">
+                <h2><span class="num">3</span> Taking an Item on Rent (Renters)</h2>
+                <p>If you are booking/renting an item, the following applies:</p>
+                <ul>
+                    <li>Renters must inspect the item at the time of pickup/delivery and report any pre-existing damage immediately.</li>
+                    <li>The item must be used only for its intended purpose and returned in the same condition, normal wear and tear excepted.</li>
+                    <li>Renters are responsible for the item for the entire duration of the booking, including safe storage and transport.</li>
+                    <li>Late returns may incur additional daily charges as set by the Lender at the time of listing.</li>
+                    <li>Renters must not sub-rent, resell, or transfer a rented item to a third party.</li>
+                </ul>
+            </div>
+
+            <div class="policy-section" id="deposit">
+                <h2><span class="num">4</span> Security Deposit &amp; Damage Policy</h2>
+                <p>
+                    Where applicable, a security deposit may be collected from the Renter before handover and is
+                    fully refundable once the item is returned in its original condition.
+                </p>
+                <ul>
+                    <li>Minor wear and tear is not chargeable.</li>
+                    <li>Damage, missing parts, or malfunction caused by misuse will be deducted from the security deposit, based on repair/replacement cost.</li>
+                    <li>If damage cost exceeds the deposit amount, the Renter is liable to pay the remaining balance directly to the Lender.</li>
+                    <li>Any dispute regarding damage must be reported to ApnaRent support within 24 hours of item return.</li>
+                </ul>
+                <div class="policy-note">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span>ApnaRent does not process payments or deposits directly between users at this time; all deposit/payment arrangements should be agreed upon and documented by both parties before handover.</span>
+                </div>
+            </div>
+
+            <div class="policy-section" id="cancellation">
+                <h2><span class="num">5</span> Cancellation &amp; Refund Policy</h2>
+                <ul>
+                    <li>Bookings can be cancelled free of charge up to 24 hours before the scheduled pickup/delivery time.</li>
+                    <li>Cancellations made within 24 hours of pickup may be subject to a cancellation charge set by the Lender.</li>
+                    <li>If a Lender cancels a confirmed booking without valid reason, repeated cancellations may result in listing suspension.</li>
+                    <li>No-shows from either party should be reported to ApnaRent support for resolution.</li>
+                </ul>
+            </div>
+
+            <div class="policy-section" id="categories">
+                <h2><span class="num">6</span> Category-Specific Rules</h2>
+                <p>Some categories require additional care due to their nature:</p>
+
+                <div class="category-grid">
+                    <div class="category-box">
+                        <i class="bi bi-cpu"></i>
+                        <h6>Electronics</h6>
+                        <p>Must include original charger/accessories where applicable. Renter is liable for water/physical damage caused by mishandling.</p>
+                    </div>
+                    <div class="category-box">
+                        <i class="bi bi-lamp"></i>
+                        <h6>Furniture</h6>
+                        <p>Transport arrangement must be agreed upon before booking. Scratches from normal delivery handling are not chargeable.</p>
+                    </div>
+                    <div class="category-box">
+                        <i class="bi bi-balloon-heart"></i>
+                        <h6>Event &amp; Party Items</h6>
+                        <p>Must be returned cleaned (where applicable) within 24 hours after the event, unless a longer period is agreed.</p>
+                    </div>
+                    <div class="category-box">
+                        <i class="bi bi-grid-3x3-gap"></i>
+                        <h6>Other Categories</h6>
+                        <p>All other item types follow the General Terms above unless a specific policy is published for that category.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="policy-section" id="prohibited">
+                <h2><span class="num">7</span> Prohibited Items</h2>
+                <p>The following must never be listed or rented through ApnaRent:</p>
+                <ul>
+                    <li>Weapons, firearms, or hazardous/flammable materials.</li>
+                    <li>Stolen, counterfeit, or unlicensed items.</li>
+                    <li>Items requiring special legal permits that the Lender does not possess.</li>
+                    <li>Any item prohibited under applicable Pakistani law.</li>
+                </ul>
+            </div>
+
+            <div class="policy-section" id="liability">
+                <h2><span class="num">8</span> Liability &amp; Disputes</h2>
+                <p>
+                    ApnaRent is not directly involved in the physical exchange, payment, or condition of any item and is
+                    not liable for loss, damage, theft, or disputes arising between users. However, ApnaRent will:
+                </p>
+                <ul>
+                    <li>Provide a messaging system for Lenders and Renters to communicate and resolve issues.</li>
+                    <li>Review reported disputes and may suspend accounts found violating this policy.</li>
+                    <li>Remove listings or users involved in fraudulent activity.</li>
+                </ul>
+            </div>
+
+            <div class="policy-section" id="contact">
+                <h2><span class="num">9</span> Contact Us</h2>
+                <p>
+                    For questions regarding this Rental Policy, disputes, or reporting an issue, please reach out
+                    via the in-app Messages section or email us at
+                    <strong>support@apnarent.com</strong>.
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,84 @@
+﻿@{
+    Layout = "_AdminLayout";
+}
+
+@model List<ApnaRent.Models.Booking>
+
+<h2 class="mb-3">Manage Bookings</h2>
+
+<div class="mb-3">
+    <a asp-action="AdminIndex" class="btn btn-secondary btn-sm">All</a>
+    <a asp-action="AdminIndex" asp-route-status="Pending" class="btn btn-warning btn-sm">Pending</a>
+    <a asp-action="AdminIndex" asp-route-status="Approved" class="btn btn-success btn-sm">Approved</a>
+    <a asp-action="AdminIndex" asp-route-status="Rejected" class="btn btn-danger btn-sm">Rejected</a>
+</div>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Item</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Days</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th width="220">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var b in Model)
+        {
+            <tr>
+                <td>@b.User?.Email</td>
+                <td>@b.Item?.Name</td>
+                <td>@b.FromDate.ToShortDateString()</td>
+                <td>@b.ToDate.ToShortDateString()</td>
+                <td>@b.Days</td>
+                <td>Rs @b.TotalPrice</td>
+                <td>
+                    <span class="badge bg-info">@b.Status</span>
+                    @if (b.Status == "Rejected" && !string.IsNullOrEmpty(b.RejectionReason))
+                    {
+                        <div class="small text-muted">Reason: @b.RejectionReason</div>
+                    }
+                </td>
+                <td>
+                    @if (b.Status == "Pending")
+                    {
+                        <a asp-action="Approve" asp-route-id="@b.Id" class="btn btn-success btn-sm">Approve</a>
+
+                        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#rejectModal-@b.Id">
+                            Reject
+                        </button>
+
+                        <div class="modal fade" id="rejectModal-@b.Id" tabindex="-1">
+                            <div class="modal-dialog">
+                                <form asp-controller="Booking" asp-action="Reject" method="post" class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Reject Booking</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <input type="hidden" name="id" value="@b.Id" />
+                                        <textarea name="reason" class="form-control" placeholder="Reason for rejection" required></textarea>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-danger">Confirm Reject</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <span class="text-muted">No Action</span>
+                    }
+                    <a asp-controller="Chat" asp-action="Index" asp-route-itemId="@b.ItemId" class="btn btn-sm btn-outline-secondary mt-1">
+                        💬 Message Owner
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,110 @@
+﻿@model ApnaRent.ViewModels.AdminUserDetailsVM
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = Model.FullName;
+}
+
+<a asp-action="Index" class="small text-decoration-none">← Back to Users</a>
+
+<div class="row g-3 mt-2">
+    <div class="col-md-4">
+        <div class="admin-card text-center">
+            <div class="rounded-circle mx-auto d-flex align-items-center justify-content-center mb-3"
+                 style="width:80px;height:80px;background:var(--admin-primary);color:#fff;font-size:32px;">
+                <i class="bi bi-person-fill"></i>
+            </div>
+            <h5 class="fw-bold mb-1">@Model.FullName</h5>
+            <p class="text-muted small mb-2">@Model.Email</p>
+            <div class="d-flex justify-content-center gap-2 mb-3">
+                <span class="status-badge status-active">@Model.Role</span>
+                <span class="status-badge @(Model.IsOtpVerified ? "status-approved" : "status-pending")">
+                    @(Model.IsOtpVerified ? "Verified" : "Unverified")
+                </span>
+                @if (Model.IsBlocked)
+                {
+                    <span class="status-badge status-rejected">Blocked</span>
+                }
+            </div>
+
+            <div class="d-grid gap-2">
+                <a href="mailto:@Model.Email" class="btn btn-blue btn-sm"><i class="bi bi-envelope me-1"></i> Email User</a>
+
+                @if (Model.IsBlocked)
+                {
+                    <form asp-action="Unblock" asp-route-id="@Model.UserId" method="post">
+                        <button type="submit" class="btn btn-teal btn-sm w-100">Unblock User</button>
+                    </form>
+                }
+                else
+                {
+                    <form asp-action="Block" asp-route-id="@Model.UserId" method="post" onsubmit="return confirm('Block this user?')">
+                        <button type="submit" class="btn btn-orange btn-sm w-100">Block User</button>
+                    </form>
+                }
+
+                <form asp-action="ChangeRole" asp-route-id="@Model.UserId" method="post" class="d-flex gap-2 mt-2">
+                    <select name="newRole" class="form-select form-select-sm">
+                        <option value="User" selected="@(Model.Role == "User")">User</option>
+                        <option value="Admin" selected="@(Model.Role == "Admin")">Admin</option>
+                    </select>
+                    <button type="submit" class="btn btn-outline-secondary btn-sm">Set Role</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="admin-card mb-3">
+            <h6 class="fw-semibold mb-3">Bookings Made (@Model.BookingsMade.Count)</h6>
+            @if (!Model.BookingsMade.Any())
+            {
+                <p class="text-muted small mb-0">No bookings yet.</p>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle mb-0">
+                        <thead><tr><th>Item</th><th>Dates</th><th>Amount</th><th>Status</th></tr></thead>
+                        <tbody>
+                            @foreach (var b in Model.BookingsMade)
+                            {
+                                <tr>
+                                    <td><a asp-controller="Booking" asp-action="Details" asp-route-id="@b.Id" class="link-user">@b.Item?.Name</a></td>
+                                    <td class="small">@b.FromDate.ToString("dd MMM") → @b.ToDate.ToString("dd MMM")</td>
+                                    <td>Rs @b.TotalPrice</td>
+                                    <td><span class="status-badge status-@b.Status.ToLower()">@b.Status</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+
+        <div class="admin-card">
+            <h6 class="fw-semibold mb-3">Items Listed (@Model.ItemsListed.Count)</h6>
+            @if (!Model.ItemsListed.Any())
+            {
+                <p class="text-muted small mb-0">No items listed yet.</p>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle mb-0">
+                        <thead><tr><th>Item</th><th>Price</th><th>Listing Status</th></tr></thead>
+                        <tbody>
+                            @foreach (var item in Model.ItemsListed)
+                            {
+                                <tr>
+                                    <td><a asp-controller="Item" asp-action="Details" asp-route-id="@item.Id" class="link-user">@item.Name</a></td>
+                                    <td>Rs @item.PricePerDay</td>
+                                    <td><span class="status-badge status-@item.ApprovalStatus.ToLower()">@item.ApprovalStatus</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>

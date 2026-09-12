@@ -1,0 +1,42 @@
+﻿@model List<ApnaRent.ViewModels.ChatInboxItemVM>
+@{
+    ViewData["HideFooter"] = true;
+    if (User.IsInRole("Admin")) { Layout = "_AdminLayout"; }
+}
+
+<div class="container py-4" style="max-width:700px;">
+    <h4 class="fw-bold mb-4">Messages</h4>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center text-muted py-5">
+            <p>No conversations yet.</p>
+            <p class="small">Message an item owner to start a conversation.</p>
+        </div>
+    }
+    else
+    {
+        <div class="list-group shadow-sm">
+            @foreach (var c in Model)
+            {
+                <a asp-controller="Chat" asp-action="Index" asp-route-itemId="@c.ItemId" asp-route-withUserId="@c.OtherUserId"
+                   class="list-group-item list-group-item-action chat-inbox-row">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle bg-light d-flex align-items-center justify-content-center flex-shrink-0"
+                             style="width:44px;height:44px;font-size:20px;">
+                            👤
+                        </div>
+                        <div class="flex-grow-1 overflow-hidden">
+                            <div class="d-flex justify-content-between">
+                                <strong>@c.OtherUserName</strong>
+                                <small class="text-muted">@c.LastMessageTime?.ToString("dd MMM, hh:mm tt")</small>
+                            </div>
+                            <div class="small text-muted">Re: @c.ItemName</div>
+                            <div class="text-truncate">@c.LastMessage</div>
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+    }
+</div>

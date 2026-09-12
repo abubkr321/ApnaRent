@@ -1,0 +1,92 @@
+﻿@model ApnaRent.Models.Booking
+
+@{
+    ViewData["HideFooter"] = true;
+}
+
+<div class="container py-4" style="max-width:700px;">
+
+    <a href="javascript:history.back()" class="back-btn mb-3 d-inline-flex">
+        <i class="bi bi-arrow-left"></i> Back
+    </a>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+            <h3 class="fw-bold mb-1">Book This Item</h3>
+            <p class="text-muted small mb-4">Fill in your rental details below to send a booking request.</p>
+
+            <div class="admin-card mb-4" style="background:var(--neutral-bg); box-shadow:none;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="small text-muted mb-1">Item</p>
+                        <p class="fw-semibold mb-0">@ViewBag.ItemName</p>
+                    </div>
+                    <div class="text-end">
+                        <p class="small text-muted mb-1">Price / Day</p>
+                        <p class="price-tag mb-0">Rs @ViewBag.PricePerDay</p>
+                    </div>
+                </div>
+            </div>
+
+            <form asp-action="Create" method="post">
+
+                <input type="hidden" asp-for="ItemId" />
+
+                <h6 class="fw-semibold mb-3"><i class="bi bi-calendar-range me-1"></i> Rental Period</h6>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">From Date</label>
+                        <input asp-for="FromDate" type="date" class="form-control" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">To Date</label>
+                        <input asp-for="ToDate" type="date" class="form-control" required />
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Quantity</label>
+                        <input type="number" name="Quantity" class="form-control" min="1" max="@ViewBag.MaxAvailable" value="1" />
+                        <small class="text-muted">@ViewBag.MaxAvailable available</small>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Payment Method</label>
+                        <div class="form-control bg-light d-flex align-items-center gap-2">
+                            <i class="bi bi-cash-coin"></i> Cash on Delivery
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4" />
+
+                <h6 class="fw-semibold mb-3"><i class="bi bi-person-vcard me-1"></i> Your Details</h6>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">CNIC</label>
+                        <input asp-for="CNIC" class="form-control" placeholder="xxxxx-xxxxxxx-x" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Contact Number</label>
+                        <input asp-for="ContactNumber" class="form-control" placeholder="03xxxxxxxxx" required />
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Delivery Location</label>
+                    <textarea asp-for="DeliveryLocation" class="form-control" rows="3"
+                              placeholder="Enter full address for delivery/pickup" required></textarea>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-teal flex-grow-1">
+                        <i class="bi bi-check2-circle me-1"></i> Confirm Booking
+                    </button>
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,45 @@
+﻿@{
+    Layout = "_AuthLayout";
+    ViewData["Title"] = "Verify OTP";
+}
+
+<h5 class="auth-heading">Verify OTP</h5>
+<p class="auth-subtext">
+    We've sent a 6-digit OTP to <b>@ViewBag.Email</b>. Enter it below to continue resetting your password.
+</p>
+
+@if (ViewBag.Error != null)
+{
+    <div class="auth-alert">
+        <i class="bi bi-exclamation-circle-fill"></i>
+        <span>@ViewBag.Error</span>
+    </div>
+}
+
+<form method="post" asp-controller="Auth" asp-action="VerifyResetOtp">
+
+    <input type="hidden" name="email" value="@ViewBag.Email" />
+
+    <div class="auth-field">
+        <label class="auth-label">Enter OTP</label>
+        <div class="input-icon-group">
+            <i class="bi bi-shield-check"></i>
+            <input class="form-control otp-input"
+                   type="text"
+                   name="otp"
+                   maxlength="6"
+                   placeholder="• • • • • •"
+                   inputmode="numeric"
+                   required />
+        </div>
+    </div>
+
+    <button type="submit" class="btn-auth-primary">
+        <i class="bi bi-check-circle"></i> Verify OTP
+    </button>
+
+    <p class="auth-bottom-text">
+        Didn't get the code?
+        <a asp-action="ForgotPassword" asp-route-email="@ViewBag.Email" class="auth-link">Resend</a>
+    </p>
+</form>

@@ -1,0 +1,76 @@
+﻿@using Microsoft.AspNetCore.Mvc.Rendering;
+@model ApnaRent.Models.Item
+@{
+    Layout = User.IsInRole("Admin") ? "_AdminLayout" : "_Layout";
+}
+
+<div class="container py-4" style="max-width:650px;">
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+            <h3 class="fw-bold mb-1">List an Item</h3>
+            <p class="text-muted small mb-4">Fill in the details below to make your item available for rent.</p>
+
+            <div asp-validation-summary="All" class="text-danger small mb-3"></div>
+
+            <form asp-action="Create"
+                  asp-controller="Item"
+                  method="post"
+                  enctype="multipart/form-data">
+
+                @Html.AntiForgeryToken()
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Item Name</label>
+                    <input asp-for="Name" class="form-control" placeholder="e.g. Full HD Projector" />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Description</label>
+                    <textarea asp-for="Description" class="form-control" rows="4" placeholder="Describe the item's condition, features, and anything renters should know"></textarea>
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Price Per Day (Rs)</label>
+                        <input asp-for="PricePerDay" type="number" step="0.01" class="form-control" placeholder="e.g. 1000" />
+                        <span asp-validation-for="PricePerDay" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Availability Count</label>
+                        <input asp-for="AvailabilityCount" type="number" class="form-control" placeholder="How many units?" />
+                    </div>
+                </div>
+
+                <div class="row g-3 mt-1">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Location</label>
+                        <input asp-for="Location" class="form-control" placeholder="e.g. DHA Phase 2, Karachi" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Category</label>
+                        <select asp-for="CategoryId" class="form-select">
+                            <option value="">Select Category</option>
+                            @foreach (var cat in ViewBag.Categories as List<Category>)
+                            {
+                                <option value="@cat.Id">@cat.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3 mt-3">
+                    <label class="form-label fw-semibold">Item Image</label>
+                    <input type="file" name="ImageFile" class="form-control" accept="image/*" />
+                    <small class="text-muted">A clear photo helps renters trust your listing.</small>
+                </div>
+
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary flex-grow-1">Save Listing</button>
+                    <a href="/Item/Index" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

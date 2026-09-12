@@ -1,0 +1,61 @@
+﻿@{
+    Layout = "_AuthLayout";
+    ViewData["Title"] = "Login";
+}
+
+<h5 class="auth-heading">Welcome back</h5>
+<p class="auth-subtext">Login to your ApnaRent account to continue.</p>
+
+@if (ViewBag.Error != null)
+{
+    <div class="auth-alert">
+        <i class="bi bi-exclamation-circle-fill"></i>
+        <span>@ViewBag.Error</span>
+    </div>
+}
+
+<form method="post" asp-controller="Auth" asp-action="Login">
+
+    <div class="auth-field">
+        <label class="auth-label">Email address</label>
+        <div class="input-icon-group">
+            <i class="bi bi-envelope"></i>
+            <input class="form-control"
+                   type="email"
+                   name="email"
+                   placeholder="example@email.com"
+                   required />
+        </div>
+    </div>
+
+    <div class="auth-field">
+        <label class="auth-label">Password</label>
+        <div class="input-icon-group">
+            <i class="bi bi-lock"></i>
+            <input class="form-control"
+                   type="password"
+                   name="password"
+                   id="loginPassword"
+                   placeholder="Enter your password"
+                   required />
+            <button type="button" class="toggle-pass" data-target="loginPassword">
+                <i class="bi bi-eye"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="auth-forgot-row">
+        <a asp-controller="Auth" asp-action="ForgotPassword" class="auth-link">Forgot Password?</a>
+    </div>
+
+    <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+
+    <button type="submit" class="btn-auth-primary">
+        <i class="bi bi-box-arrow-in-right"></i> Login
+    </button>
+
+    <p class="auth-bottom-text">
+        Don't have an account?
+        <a asp-action="Register" class="auth-link">Register</a>
+    </p>
+</form>

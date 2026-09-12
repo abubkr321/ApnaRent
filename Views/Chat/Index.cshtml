@@ -1,0 +1,34 @@
+﻿@model List<Message>
+@{
+    ViewData["HideFooter"] = true;
+    if (User.IsInRole("Admin")) { Layout = "_AdminLayout"; }
+}
+
+<div class="container py-4" style="max-width:650px;">
+    <a asp-controller="Chat" asp-action="Inbox" class="small text-decoration-none">← Back to Messages</a>
+    <h5 class="fw-bold mb-3 mt-2">Chat about @ViewBag.ItemName</h5>
+
+    <div class="chat-window border rounded p-3 mb-3 bg-white">
+        @if (!Model.Any())
+        {
+            <p class="text-muted text-center mt-5">No messages yet. Say hello!</p>
+        }
+        @foreach (var msg in Model)
+        {
+            bool isMine = msg.SenderId == (string)ViewBag.CurrentUserId;
+            <div class="mb-2 d-flex @(isMine ? "justify-content-end" : "justify-content-start")">
+                <div class="p-2 rounded chat-bubble @(isMine ? "bg-primary text-white" : "bg-light")">
+                    @msg.Text
+                    <div class="small opacity-75 mt-1">@msg.SentOn.ToString("dd MMM, hh:mm tt")</div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <form asp-controller="Chat" asp-action="Send" method="post" class="d-flex gap-2">
+        <input type="hidden" name="itemId" value="@ViewBag.ItemId" />
+        <input type="hidden" name="otherUserId" value="@ViewBag.OtherUserId" />
+        <input type="text" name="text" class="form-control" placeholder="Type a message..." required autocomplete="off" />
+        <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+</div>

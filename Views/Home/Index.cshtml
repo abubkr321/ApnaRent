@@ -1,0 +1,128 @@
+﻿@model List<Item>
+
+<section class="hero-section">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <h1>Rent Anything, Anytime</h1>
+        <p class="mb-0">Nearby and at prices that suit you</p>
+
+        <form asp-controller="Home" asp-action="Index" method="get" class="hero-search">
+            <input type="text" name="search" placeholder="What do you want to rent?"
+                   value="@ViewBag.SearchTerm" />
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+</section>
+
+<div class="container mt-4" id="items-section">
+
+    <div class="mb-2" style="max-width:260px;">
+        <select class="form-select" onchange="if(this.value) window.location.href=this.value;">
+            <option value="/Home/Index">All Categories</option>
+            @if (ViewBag.Categories != null)
+            {
+                @foreach (var cat in ViewBag.Categories as List<Category>)
+                {
+                    <option value="/Home/Index?categoryId=@cat.Id">@cat.Name</option>
+                }
+            }
+        </select>
+    </div>
+
+    <div class="category-scroll">
+        @if (ViewBag.Categories != null)
+        {
+            @foreach (var cat in ViewBag.Categories as List<Category>)
+            {
+                <a asp-controller="Home" asp-action="Index" asp-route-categoryId="@cat.Id"
+                   class="category-chip text-decoration-none @(ViewBag.SelectedCategoryId == cat.Id ? "active" : "")">
+                    @cat.Name
+                </a>
+            }
+        }
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold mb-0">
+            @if (ViewBag.IsSearching == true)
+            {
+                <text>Results for "@ViewBag.SearchTerm"</text>
+            }
+            else
+            {
+                <text>Available Items</text>
+            }
+        </h4>
+        <a asp-controller="Item" asp-action="AllItems" class="text-decoration-none">View All →</a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center text-muted py-5">
+            <p class="mb-0">No items found@(ViewBag.IsSearching == true ? $" for \"{ViewBag.SearchTerm}\"" : "").</p>
+        </div>
+    }
+    else
+    {
+        <div class="item-row-scroll">
+            @foreach (var item in Model)
+            {
+                <div class="item-card-wrapper">
+                    @await Html.PartialAsync("_ItemCard", item)
+                </div>
+
+            }
+        </div>
+    }
+</div>
+
+<section class="trust-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 trust-item">
+                <div class="trust-icon">🛡️</div>
+                <h6>Everything is Guaranteed</h6>
+                <p class="small text-white-50">Protection for both renter and owner</p>
+            </div>
+            <div class="col-md-4 trust-item">
+                <div class="trust-icon">✅</div>
+                <h6>Everyone is Verified</h6>
+                <p class="small text-white-50">OTP-verified users only</p>
+            </div>
+            <div class="col-md-4 trust-item">
+                <div class="trust-icon">💰</div>
+                <h6>Cheaper than Buying</h6>
+                <p class="small text-white-50">Rent instead of spending on new items</p>
+            </div>
+            <div class="col-md-4 trust-item">
+                <div class="trust-icon">📍</div>
+                <h6>Rent Near You</h6>
+                <p class="small text-white-50">Find items closer to your location</p>
+            </div>
+            <div class="col-md-4 trust-item">
+                <div class="trust-icon">⏱️</div>
+                <h6>Flexible Timing</h6>
+                <p class="small text-white-50">Book for the days you actually need</p>
+            </div>
+            <div class="col-md-4 trust-item">
+                <div class="trust-icon">🌱</div>
+                <h6>Good for the Environment</h6>
+                <p class="small text-white-50">Reuse more, waste less</p>
+            </div>
+        </div>
+        <div class="text-center mt-3">
+            <a asp-controller="Home" asp-action="Guarantee" class="text-white">Learn more about our guarantee →</a>
+        </div>
+    </div>
+</section>
+</div>
+</section>
+
+@section Scripts {
+    <script>
+        if (window.location.search.includes('search=') || window.location.search.includes('categoryId=')) {
+            const el = document.getElementById('items-section');
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    </script>
+}

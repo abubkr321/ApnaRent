@@ -1,0 +1,359 @@
+﻿@model ApnaRent.Models.Item
+
+@{
+    bool isAdminView = User.IsInRole("Admin");
+
+    if (isAdminView)
+    {
+        Layout = "_AdminLayout";
+    }
+}
+
+<div class="@(isAdminView ? "" : "container py-4")">
+
+    <div class="row g-4 align-items-start">
+
+        <!-- LEFT: IMAGE -->
+        <div class="col-lg-7">
+
+            <div class="card shadow-sm border-0 overflow-hidden">
+
+                @if (!string.IsNullOrEmpty(Model.ImagePath))
+                {
+                    <div style="
+                        width:100%;
+                        height:400px;
+                        background:#f8f9fa;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        overflow:hidden;">
+
+                        <img src="@Model.ImagePath"
+                             alt="@Model.Name"
+                             style="
+                        width:100%;
+                        height:100%;
+                        object-fit:contain;
+                        display:block;" />
+                    </div>
+                }
+                else
+                {
+                    <div style="
+                        width:100%;
+                        height:400px;
+                        background:#f8f9fa;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;">
+
+                        <i class="bi bi-image text-muted" style="font-size:60px;"></i>
+                    </div>
+                }
+
+            </div>
+
+        </div>
+
+
+        <!-- RIGHT: ITEM INFORMATION -->
+        <div class="col-lg-5">
+
+            <div class="card shadow-sm border-0 p-4">
+
+                <!-- NAME + STATUS -->
+                <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+
+                    <h3 class="fw-bold mb-0">
+                        @Model.Name
+                    </h3>
+
+                    <span class="status-badge status-@Model.ApprovalStatus.ToLower()">
+                        @Model.ApprovalStatus
+                    </span>
+
+                </div>
+
+
+                <!-- LOCATION -->
+                <p class="text-muted mb-3">
+                    <i class="bi bi-geo-alt"></i>
+                    @Model.Location
+                </p>
+
+
+                <hr />
+
+
+                <!-- DESCRIPTION -->
+                <h6 class="fw-bold">
+                    Description
+                </h6>
+
+                <p class="text-muted mb-4">
+                    @Model.Description
+                </p>
+
+
+                <!-- OWNER -->
+                <div class="border rounded p-3 mb-3">
+
+                    <div class="d-flex align-items-center gap-2">
+
+                        <div class="rounded-circle bg-light d-flex align-items-center justify-content-center"
+                             style="width:44px;height:44px;flex-shrink:0;">
+
+                            <i class="bi bi-person-fill text-primary"></i>
+
+                        </div>
+
+                        <div>
+                            <div class="small text-muted">
+                                Owned by
+                            </div>
+
+                            <div class="fw-semibold">
+                                @(Model.Owner?.FullName ?? "ApnaRent User")
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PRICE / AVAILABILITY -->
+                <div class="border rounded p-3 mb-3">
+
+                    <p class="price-tag mb-1">
+                        Rs @Model.PricePerDay
+                        <small class="fw-normal text-muted">/day</small>
+                    </p>
+
+                    <p class="small text-muted mb-0">
+                        @(Model.AvailabilityCount > 0
+                            ? $"{Model.AvailabilityCount} available"
+                            : "Currently unavailable")
+                    </p>
+
+                </div>
+
+
+                <!-- USER ACTIONS -->
+                @if (!isAdminView)
+                {
+                    @if (ViewBag.IsOwnItem == true)
+                    {
+                        <span class="btn btn-outline-secondary w-100 disabled mb-2">
+                            This is your item
+                        </span>
+                    }
+                    else if (Model.AvailabilityCount > 0)
+                    {
+                        <a asp-controller="Booking"
+                           asp-action="Create"
+                           asp-route-itemId="@Model.Id"
+                           class="btn btn-primary w-100 mb-2">
+                            Book Now
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="btn btn-secondary w-100 disabled mb-2">
+                            @(ViewBag.NextAvailableDate != null
+                                ? $"Available after {((DateTime)ViewBag.NextAvailableDate):dd MMM}"
+                                : "Not Available")
+                        </span>
+                    }
+
+
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <form asp-controller="Saved"
+                              asp-action="Toggle"
+                              method="post">
+
+                            <input type="hidden"
+                                   name="itemId"
+                                   value="@Model.Id" />
+
+                            <input type="hidden"
+                                   name="returnUrl"
+                                   value="@Context.Request.Path" />
+
+                            <button type="submit"
+                                    class="btn btn-outline-danger btn-sm w-100">
+
+                                @(ViewBag.IsSaved == true
+                                    ? "❤️ Saved"
+                                    : "🤍 Save this item")
+
+                            </button>
+
+                        </form>
+                    }
+                }
+
+
+                <!-- MESSAGE OWNER -->
+                @if (User.Identity?.IsAuthenticated == true &&
+                     ViewBag.IsOwnItem != true &&
+                     !isAdminView)
+                {
+                    <a asp-controller="Chat"
+                       asp-action="Index"
+                       asp-route-itemId="@Model.Id"
+                       class="btn btn-outline-secondary btn-sm w-100 mt-2">
+
+                        💬 Send Message
+
+                    </a>
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- REJECTION MESSAGE -->
+    @if (Model.ApprovalStatus == "Rejected" &&
+         !string.IsNullOrEmpty(Model.ItemRejectionReason))
+    {
+        <div class="alert alert-danger mt-4">
+            Rejected: @Model.ItemRejectionReason
+        </div>
+    }
+
+
+    <!-- ADMIN ACTIONS -->
+    @if (isAdminView)
+    {
+        <div class="admin-card mt-4">
+
+            <h6 class="fw-semibold mb-3">
+                Admin Actions
+            </h6>
+
+            <div class="d-flex flex-wrap gap-2">
+
+                @if (Model.ApprovalStatus == "Pending")
+                {
+                    <form asp-controller="AdminItemApproval"
+                          asp-action="Approve"
+                          method="post">
+
+                        <input type="hidden"
+                               name="id"
+                               value="@Model.Id" />
+
+                        <button type="submit"
+                                class="btn btn-teal btn-sm">
+
+                            Approve Listing
+
+                        </button>
+
+                    </form>
+
+
+                    <button type="button"
+                            class="btn btn-orange btn-sm"
+                            data-bs-toggle="modal"
+                            data-bs-target="#rejectItemModal">
+
+                        Reject Listing
+
+                    </button>
+                }
+
+
+                <a asp-controller="AdminUsers"
+                   asp-action="Details"
+                   asp-route-id="@Model.OwnerId"
+                   class="btn btn-blue btn-sm">
+
+                    View Owner Profile
+
+                </a>
+
+
+                <form asp-controller="Item"
+                      asp-action="Delete"
+                      asp-route-id="@Model.Id"
+                      method="get"
+                      onsubmit="return confirm('Delete this item permanently?')">
+
+                    <button type="submit"
+                            class="btn btn-outline-danger btn-sm">
+
+                        Delete Item
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+        <!-- REJECT MODAL -->
+        <div class="modal fade"
+             id="rejectItemModal"
+             tabindex="-1">
+
+            <div class="modal-dialog">
+
+                <form asp-controller="AdminItemApproval"
+                      asp-action="Reject"
+                      method="post"
+                      class="modal-content">
+
+                    <div class="modal-header">
+
+                        <h5 class="modal-title">
+                            Reject Listing
+                        </h5>
+
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal">
+                        </button>
+
+                    </div>
+
+                    <div class="modal-body">
+
+                        <input type="hidden"
+                               name="id"
+                               value="@Model.Id" />
+
+                        <textarea name="reason"
+                                  class="form-control"
+                                  placeholder="Reason for rejection"
+                                  required></textarea>
+
+                    </div>
+
+                    <div class="modal-footer">
+
+                        <button type="submit"
+                                class="btn btn-danger">
+
+                            Confirm Reject
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+    }
+
+</div>

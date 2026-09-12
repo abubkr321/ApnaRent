@@ -1,0 +1,90 @@
+﻿@model List<ApnaRent.Models.Booking>
+
+<div class="container py-4">
+    <h3 class="fw-bold mb-3">Rental Requests</h3>
+    <p class="text-muted small mb-3">Requests from people who want to rent your items.</p>
+
+    <div class="mb-3 d-flex gap-2 flex-wrap">
+        <a asp-action="MyItemRequests" class="tab-btn">All</a>
+        <a asp-action="MyItemRequests" asp-route-status="Pending" class="tab-btn">Pending</a>
+        <a asp-action="MyItemRequests" asp-route-status="Approved" class="tab-btn">Approved</a>
+        <a asp-action="MyItemRequests" asp-route-status="Active" class="tab-btn">Active</a>
+        <a asp-action="MyItemRequests" asp-route-status="Completed" class="tab-btn">Completed</a>
+        <a asp-action="MyItemRequests" asp-route-status="Rejected" class="tab-btn">Rejected</a>
+    </div>
+
+    <div class="admin-card">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Renter</th>
+                        <th>Item</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Qty</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th width="220">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr><td colspan="8" class="text-center text-muted py-4">No rental requests in this category.</td></tr>
+                    }
+                    else
+                    {
+                        @foreach (var b in Model)
+                        {
+                            <tr>
+                                <td>@b.User?.Email</td>
+                                <td><a asp-controller="Booking" asp-action="Details" asp-route-id="@b.Id" class="link-user">@b.Item?.Name</a></td>
+                                <td>@b.FromDate.ToShortDateString()</td>
+                                <td>@b.ToDate.ToShortDateString()</td>
+                                <td>@b.Quantity</td>
+                                <td>Rs @b.TotalPrice</td>
+                                <td>
+                                    <span class="status-badge status-@b.Status.ToLower()">@b.Status</span>
+                                    @if (b.Status == "Rejected" && !string.IsNullOrEmpty(b.RejectionReason))
+                                    {
+                                        <div class="small text-muted">Reason: @b.RejectionReason</div>
+                                    }
+                                </td>
+                                <td>
+                                    @if (b.Status == "Pending")
+                                    {
+                                        <a asp-action="Approve" asp-route-id="@b.Id" class="btn btn-teal btn-sm">Approve</a>
+                                        <button type="button" class="btn btn-orange btn-sm" data-bs-toggle="modal" data-bs-target="#rejectModal-@b.Id">Reject</button>
+
+                                        <div class="modal fade" id="rejectModal-@b.Id" tabindex="-1">
+                                            <div class="modal-dialog">
+                                                <form asp-controller="Booking" asp-action="Reject" method="post" class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Reject Request</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <input type="hidden" name="id" value="@b.Id" />
+                                                        <textarea name="reason" class="form-control" placeholder="Reason for rejection" required></textarea>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="submit" class="btn btn-danger">Confirm Reject</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">No Action</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

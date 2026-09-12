@@ -156,11 +156,11 @@ ApnaRent/
 
 <div align="center">
 
-**Ab**
+**Abubakar Mangrio**
 Software Engineering Graduate — SZABIST Karachi
 
 [![GitHub](https://img.shields.io/badge/GitHub-abubkr321-181717?style=flat&logo=github)](https://github.com/abubkr321)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=flat&logo=linkedin)](#)
+[![LinkedIn]([https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=flat&logo=linkedin](https://www.linkedin.com/in/abubakar-mangrio/))](#)
 
 </div>
 

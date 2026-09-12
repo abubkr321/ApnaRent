@@ -52,29 +52,30 @@ The platform is designed end-to-end: from database schema and backend business l
 
 ---
 
-## 🖥️ Screenshots
+## 🖥️ UI Showcase
 
 <div align="center">
 
 | Landing Page | User Dashboard |
 |:---:|:---:|
-| _add screenshot_ | _add screenshot_ |
+|<img width="946" height="503" alt="Landing page" src="https://github.com/user-attachments/assets/77fc649c-9ec5-48df-b36f-d964de17bb54" />
+ |<img width="945" height="461" alt="User Home Page" src="https://github.com/user-attachments/assets/6bea6a5a-507f-4042-99e5-5817d8bec0dc" /> |
 
 | Item Listings | Messaging & Notifications |
 |:---:|:---:|
-| _add screenshot_ | _add screenshot_ |
+|<img width="944" height="464" alt="Item Listing " src="https://github.com/user-attachments/assets/840ac309-5650-4d85-bf67-8dedbf391958" /> |<img width="650" height="296" alt="Message   Notification" src="https://github.com/user-attachments/assets/b7a40bc1-00f8-4930-b836-4169144ac682" /> |
 
 | Admin Dashboard | Manage Bookings |
 |:---:|:---:|
-| _add screenshot_ | _add screenshot_ |
+|<img width="937" height="478" alt="Admin Home Page" src="https://github.com/user-attachments/assets/08441474-3557-4eda-8221-9670bce82a05" /> | <img width="945" height="437" alt="Manage Bookings" src="https://github.com/user-attachments/assets/bc9f5b64-0cbf-45a9-93b7-dc84703d91ba" /> |
 
 | Manage Users | Item Listing Requests |
 |:---:|:---:|
-| _add screenshot_ | _add screenshot_ |
+| <img width="944" height="454" alt="Manage Users" src="https://github.com/user-attachments/assets/3b42fcde-83de-44f1-975f-4aa38e6cd591" /> | <img width="931" height="434" alt="Item Listing Request" src="https://github.com/user-attachments/assets/d023883c-9953-4c47-9dec-0c5472631742" /> |
 
 | Login Page |
 |:---:|
-| _add screenshot_ |
+|<img width="959" height="446" alt="Login" src="https://github.com/user-attachments/assets/ca836663-eed6-49ce-9729-ea6957754efc" /> |
 
 </div>
 
